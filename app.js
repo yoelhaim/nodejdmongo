@@ -38,5 +38,5 @@ app.delete("/addvideos/video/:id", middle);
 app.use("/add", postAuth);
 app.use("/addvideos", viDeos);
 app.use("/users", Auth);
-app.listen(port, () => console.log("success cvonnect to :" + port));
+app.listen(process.env.PORT || port, () => console.log("success cvonnect to :" + port));
 module.exports = app;
