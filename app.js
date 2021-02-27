@@ -6,6 +6,7 @@ const fileUpload = require("express-fileupload");
 const morgan = require("morgan");
 const app = express();
 const port = 3000;
+
 const postAuth = require("./route/postAuthRoute");
 const viDeos = require("./route/videosRoute");
 const Auth = require("./route/authRoute");
@@ -21,14 +22,47 @@ app.use([
   }),
   morgan("dev"),
 ]);
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  autoIndex: false, // Don't build indexes
+  poolSize: 10, // Maintain up to 10 socket connections
+  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  family: 4, // Use IPv4, skip trying IPv6
+};
 //// connect to mongo db
-mongo.connect(
-  "mongodb+srv://youmer:zaza1996@cluster0.rsyiu.gcp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+// mongo.connect(
+//   "mongodb+srv://youmer:zaza1996@cluster0.rsyiu.gcp.mongodb.net/myFirstDatabase"
+// );
+// const conn = mongo.connection;
+// conn.on("connected", () => console.log("successfully coonect to mongo db"));
+// conn.on("error", () => console.log("error connect to  mongo "));
+const uri =
+  "mongodb+srv://youmer:zaza1996@alcoran.3p7in.mongodb.net/Alcoran?retryWrites=true&w=majority";
+// mongo.connect(uri, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
+mongo.connect(uri, options, function (error) {});
+
+// Or using promises
+mongo.connect(uri, options).then(
+  () => {
+    app.listen(process.env.PORT || port, () =>
+      console.log("success cvonnect to :" + port)
+    );
+  },
+  (err) => {
+    /** handle initial connection error */
+  }
 );
 const conn = mongo.connection;
 conn.on("connected", () => console.log("successfully coonect to mongo db"));
 conn.on("error", () => console.log("error connect to  mongo "));
-
 //////middlewaire
 app.post("/addft", middle);
 app.post("/addvideos", middle);
@@ -38,5 +72,5 @@ app.delete("/addvideos/video/:id", middle);
 app.use("/add", postAuth);
 app.use("/addvideos", viDeos);
 app.use("/users", Auth);
-app.listen(process.env.PORT || port, () => console.log("success cvonnect to :" + port));
+
 module.exports = app;
