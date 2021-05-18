@@ -1,6 +1,5 @@
 const express = require("express");
 const mongo = require("mongoose");
-const bodyparser = require("body-parser");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const morgan = require("morgan");
@@ -13,10 +12,8 @@ const Auth = require("./route/authRoute");
 const middle = require("./middleware/checktoken");
 app.use([
   express.json(),
-  bodyparser.urlencoded({ extended: true }),
   express.urlencoded({ extended: true }),
   cors(),
-  bodyparser.json(),
   fileUpload({
     createParentPath: true,
   }),
@@ -26,7 +23,6 @@ const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
-
 };
 //// connect to mongo db
 // mongo.connect(
@@ -64,9 +60,9 @@ app.post("/addvideos", middle);
 app.delete("/addvideos/video/:id", middle);
 //////fin middlewaire
 
-app.get('/', (req,res)=>{
-res.send("hello ");
-})
+app.get("/", (req, res) => {
+  res.send("hello ");
+});
 
 app.use("/add", postAuth);
 app.use("/addvideos", viDeos);
